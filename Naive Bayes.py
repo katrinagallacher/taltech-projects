@@ -1,16 +1,6 @@
-#!/usr/bin/env python
-# coding: utf-8
-
-# In[10]:
-
-
 import csv
 import numpy as np
 import pandas as pd
-
-
-# In[11]:
-
 
 # reading in and preprocessing the train dataset
 
@@ -25,24 +15,12 @@ with open("C:/Users/katri/Downloads/bbc_newstopics/bbc_train.csv", encoding="utf
 
 print(train_dataset[0])
 
-
-# In[12]:
-
-
 # converting into pandas dataframe for better readability
 
 df_train_dataset = pd.DataFrame(train_dataset)
 df_train_dataset.head(5)
 
-
-# In[13]:
-
-
 topics = ['tech', 'politics', 'business', 'entertainment', 'sport']
-
-
-# In[1]:
-
 
 # creating unique vocabulary from the train dataset
 
@@ -57,10 +35,6 @@ unique_vocabulary = list(set(vocabulary)) # converting list into set removes the
         
 print(unique_vocabulary[0:10])
 
-
-# In[15]:
-
-
 length_vocabulary = len(vocabulary)
 print (f"Total vocabulary: {length_vocabulary}")
 
@@ -68,18 +42,11 @@ length_unique_vocabulary = len(unique_vocabulary)
 print (f"Unique vocabulary (V): {length_unique_vocabulary}")
 
 
-# In[16]:
-
-
 # calculating a probability that the word w is present in articles with the topic is c, 
 # according to the formula P(w|c)= (N_w,c+1)/N_c+|V|), where:
 # N_w,c (occurrencies) - number of occurrences of word w in articles with the topic c
 # N_c (total_count) - total number of words in articles with the topic c
 # |V| (length_unique_vocabulary) - number of unique words over all articles and topics
-
-
-# In[17]:
-
 
 # occurrencies of each unique word in the articles with each of the topics
 
@@ -98,18 +65,10 @@ for topic in topics:
 
 print(occurrencies[0:10])
 
-
-# In[18]:
-
-
 # presenting occurrencies as pandas dataframe for better readability
 
 df_occ = pd.DataFrame(occurrencies, columns=['Topic', 'Word', 'Occurrencies'])
 df_occ.head(5)
-
-
-# In[19]:
-
 
 # total count of words in the articles with each of the topics
 
@@ -127,18 +86,10 @@ for topic in topics:
 
 print(total_count)
 
-
-# In[20]:
-
-
 # converting the list of word counts into a dictionary for easier access
 
 dict_count = dict(total_count)
 print(dict_count)
-
-
-# In[21]:
-
 
 # calculating probabilities for each word
 
@@ -148,10 +99,6 @@ for index, row in df_occ.iterrows():
 df_occ['Probabilities'] = p
 df_occ.head(5)
 
-
-# In[22]:
-
-
 # since we will operate with logs of probabilities, we can caclulate and add them to the df now
 
 log_p = []
@@ -159,10 +106,6 @@ for index, row in df_occ.iterrows():
     log_p.append(np.log(row['Probabilities']))
 df_occ['Log Probabilities'] = log_p
 df_occ.head(5)
-
-
-# In[23]:
-
 
 # calculating number of articles with each topic
 
@@ -176,10 +119,6 @@ for topic in topics:
     count_articles.append(row)
 print(count_articles)
 
-
-# In[24]:
-
-
 # calculating probabilitises that the topic of the article is c (P(c)) and calculating logs of probabilities
 
 p_c_list = []
@@ -189,18 +128,10 @@ for i in count_articles:
     p_c_list.append(row)
 print(p_c_list)
 
-
-# In[25]:
-
-
 # converting list of probabilitises into dictionary for easier access
 
 p_c_dict = dict(p_c_list)
 print(p_c_dict)
-
-
-# In[26]:
-
 
 # reading in and preprocessing the test dataset
 
@@ -214,18 +145,10 @@ with open("C:/Users/katri/Downloads/bbc_newstopics/bbc_test.csv", encoding="utf-
         test_dataset.append(article)
 print(test_dataset[0])
 
-
-# In[27]:
-
-
 # converting test dataset into pandas dataframe for better readability
 
 df_test_dataset = pd.DataFrame(test_dataset)
 df_test_dataset.head(5)
-
-
-# In[28]:
-
 
 # predicting the article topic
 
@@ -257,26 +180,14 @@ for article in test_dataset:
     predicted_probabilities.append([article[1], article[0], max_prob])
 print(predicted_probabilities)
 
-
-# In[69]:
-
-
 df_predicted_topics = pd.DataFrame(predicted_probabilities, columns = ['Article', 'Topic', 'Predicted Topic'])
-df_predicted_topics.head(100)
-
-
-# In[71]:
+df_predicted_topics.head(10)
 
 
 df_predicted_topics['Accuracy'] = df_predicted_topics['Topic'] == (df_predicted_topics['Predicted Topic'])
-df_predicted_topics.head(100)
-
-
-# In[74]:
-
+df_predicted_topics.head(10)
 
 # calculates the error rate of the model
 
 num_false = (df_predicted_topics['Accuracy'] == False).sum()
 print (f"Error rate: {num_false}%")
-
